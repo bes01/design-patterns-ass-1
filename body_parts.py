@@ -1,86 +1,78 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Protocol
 
 from creature import BodyPart
 
 
-@dataclass
-class Limbs(BodyPart, ABC):
-    limbs_quantity: int
+class IMovement(ABC):
 
     @abstractmethod
     def move(self) -> bool:
         ...
 
+    @abstractmethod
+    def can_move(self) -> bool:
+        ...
+
+
+class ILimbs(BodyPart, Protocol):
+
+    def move(self) -> bool:
+        ...
+
+    # Should be called once right after initialization
+    def grant_movement_abilities(self, movement_chain: IMovement):
+        ...
+
 
 @dataclass
-class Movement:
+class Limbs(BodyPart, ABC):
+    limbs_quantity: int
+    limbs_chain: ILimbs = None
+    movement_chain: IMovement = None
+
+    def move(self) -> bool:
+        if self.movement_chain is not None and self.movement_chain.can_move():
+            return self.movement_chain.move()
+        elif self.limbs_chain is not None:
+            return self.limbs_chain.move()
+        else:
+            return False
+
+    def grant_movement_abilities(self, movement_chain: IMovement):
+        self.movement_chain = movement_chain
+
+
+@dataclass
+class Movement(IMovement):
     limb: Limbs
-    type: str
+    type: str  # Just for printing
     requires_stamina: int
     uses_stamina: int
     speed: int
+    requires_limbs: int
+    other_movement: IMovement = None
 
     # Returns true if moved successfully and updates creature stats otherwise returns false
     def move(self) -> bool:
-        if self.can_move():
-            print(self.type)
+        if self.can_i_move():
+            # print(self.type)
             self.limb.parentBody.stamina -= self.uses_stamina
             self.limb.parentBody.position += self.speed
             return True
+        elif self.can_other_move():
+            return self.other_movement.move()
         else:
             return False
 
-    def can_move(self):
-        return self.limb.parentBody.stamina > self.requires_stamina \
-               and self.limb.parentBody.stamina - self.uses_stamina > 0
+    def can_move(self) -> bool:
+        return self.can_i_move() or self.can_other_move()
 
+    def can_i_move(self):
+        return (self.limb.limbs_quantity >= self.requires_limbs and
+                self.limb.parentBody.stamina > self.requires_stamina and
+                self.limb.parentBody.stamina - self.uses_stamina > 0)
 
-# Fly
-@dataclass
-class Wings(Limbs):
-    other_type_of_limbs: Limbs
-
-    def __post_init__(self):
-        self.flying = Movement(self, "Flying", 80, 4, 8)
-
-    def move(self) -> bool:
-        if self.limbs_quantity == 2 and self.flying.can_move():
-            return self.flying.move()
-        else:
-            return self.other_type_of_limbs.move()
-
-
-# Run, Walk or Hop
-@dataclass
-class Legs(Limbs):
-    other_type_of_limbs: Limbs
-
-    def __post_init__(self):
-        self.running = Movement(self, "Running", 60, 4, 6)
-        self.walking = Movement(self, "Walking", 40, 2, 4)
-        self.hopping = Movement(self, "Hopping", 20, 2, 3)
-
-    def move(self) -> bool:
-        if self.limbs_quantity == 2 and self.running.can_move():
-            return self.running.move()
-        elif self.limbs_quantity == 2 and self.walking.can_move():
-            return self.walking.move()
-        elif self.limbs_quantity == 1 and self.hopping.can_move():
-            return self.hopping.move()
-        else:
-            return self.other_type_of_limbs.move()
-
-
-# Crawl
-@dataclass
-class NoLimbs(Limbs):
-
-    def __post_init__(self):
-        self.crawling = Movement(self, "Crawling", 0, 1, 1)
-
-    def move(self) -> int:
-        if self.crawling.can_move():
-            return self.crawling.move()
-        else:
-            return False
+    def can_other_move(self):
+        return self.other_movement is not None and self.other_movement.can_move()

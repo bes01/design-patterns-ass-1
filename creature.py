@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Protocol
 
 
 @dataclass
@@ -19,5 +20,5 @@ class Creature(ABC):
 
 
 @dataclass
-class BodyPart:
+class BodyPart(Protocol):
     parentBody: Creature
