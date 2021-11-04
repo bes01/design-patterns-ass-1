@@ -22,12 +22,12 @@ class ILimbs(BodyPart, Protocol):
         ...
 
     # Should be called once right after initialization
-    def grant_movement_abilities(self, movement_chain: IMovement):
+    def grant_movement_abilities(self, movement_chain: IMovement) -> None:
         ...
 
 
 @dataclass
-class Limbs(BodyPart, ABC):
+class Limbs(BodyPart):
     limbs_quantity: int
     limbs_chain: ILimbs = None
     movement_chain: IMovement = None
@@ -40,7 +40,7 @@ class Limbs(BodyPart, ABC):
         else:
             return False
 
-    def grant_movement_abilities(self, movement_chain: IMovement):
+    def grant_movement_abilities(self, movement_chain: IMovement) -> None:
         self.movement_chain = movement_chain
 
 
@@ -52,27 +52,27 @@ class Movement(IMovement):
     uses_stamina: int
     speed: int
     requires_limbs: int
-    other_movement: IMovement = None
+    movement_chain: IMovement = None
 
     # Returns true if moved successfully and updates creature stats otherwise returns false
     def move(self) -> bool:
         if self.can_i_move():
             # print(self.type)
-            self.limb.parentBody.stamina -= self.uses_stamina
-            self.limb.parentBody.position += self.speed
+            self.limb.body.stamina -= self.uses_stamina
+            self.limb.body.position += self.speed
             return True
-        elif self.can_other_move():
-            return self.other_movement.move()
+        elif self.can_chain_move():
+            return self.movement_chain.move()
         else:
             return False
 
     def can_move(self) -> bool:
-        return self.can_i_move() or self.can_other_move()
+        return self.can_i_move() or self.can_chain_move()
 
     def can_i_move(self):
-        return (self.limb.limbs_quantity >= self.requires_limbs and
-                self.limb.parentBody.stamina > self.requires_stamina and
-                self.limb.parentBody.stamina - self.uses_stamina > 0)
+        return self.limb.limbs_quantity >= self.requires_limbs and \
+               self.limb.body.stamina > self.requires_stamina and \
+               self.limb.body.stamina - self.uses_stamina > 0
 
-    def can_other_move(self):
-        return self.other_movement is not None and self.other_movement.can_move()
+    def can_chain_move(self):
+        return self.movement_chain is not None and self.movement_chain.can_move()
