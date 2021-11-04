@@ -33,7 +33,7 @@ class EvolvedCreature(Creature):
         self.limbs_chain = wings
 
         print(f'The creature evolved {wings_quantity} wing(s), {legs_quantity} leg(s), '
-              f'+{self.teeth_sharpness_buff} teeth and *{self.claws_size_buff} claws'
+              f'+{self.teeth_sharpness_buff} teeth damage buff and *{self.claws_size_buff} claws'
               f' damage buff at position {self.position}')
 
     def do_move(self) -> bool:
