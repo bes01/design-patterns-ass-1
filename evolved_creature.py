@@ -1,6 +1,6 @@
 import random
 
-from body_parts import *
+from movement import *
 from creature import Creature
 
 
