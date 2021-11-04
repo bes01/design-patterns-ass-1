@@ -22,7 +22,7 @@ class Creature(ABC):
 
     # Returns true if received damage was საბედისწერო
     @abstractmethod
-    def receive_damage(self) -> bool:
+    def receive_damage(self, damage: int) -> bool:
         ...
 
 

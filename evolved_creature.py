@@ -7,7 +7,8 @@ claws_buffs = [2, 3, 4]
 
 class EvolvedCreature(Creature):
 
-    def __init__(self, position: int, wings_quantity, legs_quantity, teeth_sharpness_buff, claws_size_buff):
+    def __init__(self, position: int, wings_quantity: int, legs_quantity: int,
+                 teeth_sharpness_buff: int = 0, claws_size_buff: int = 1):
         self.position = position
         self.teeth_sharpness_buff = teeth_sharpness_buff
         self.claws_size_buff = claws_size_buff
@@ -41,3 +42,6 @@ class EvolvedCreature(Creature):
     def do_damage(self) -> int:
         return self.claws_size_buff * (self.teeth_sharpness_buff + self.power)
 
+    def receive_damage(self, damage: int) -> bool:
+        self.health -= damage
+        return self.health <= 0
