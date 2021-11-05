@@ -23,7 +23,7 @@ def helper(evolved_creature: EvolvedCreature, movement_stats: List) -> Tuple[int
 
 
 def test_no_limb_evolved_creature() -> None:
-    evolved_creature: EvolvedCreature = EvolvedCreature()
+    evolved_creature: EvolvedCreature = EvolvedCreature(test_mode=True)
     stamina, position = helper(evolved_creature, MovementType.CRAWLING.value)
     assert stamina == 0
     assert position == 100
@@ -31,11 +31,11 @@ def test_no_limb_evolved_creature() -> None:
 
 def test_one_leg_evolved_creature() -> None:
     # Hop Until stamina = 20
-    evolved_creature: EvolvedCreature = EvolvedCreature(legs_quantity=1)
+    evolved_creature: EvolvedCreature = EvolvedCreature(legs_quantity=1, test_mode=True)
     stamina, position = helper(evolved_creature, MovementType.HOPPING.value)
     assert stamina == 20
     assert (
-        position == 120
+            position == 120
     )  # position = ((init_stamina - requires_stamina) / uses_stamina)) * speed
 
     # Crawl Until stamina = 0
@@ -46,7 +46,7 @@ def test_one_leg_evolved_creature() -> None:
 
 def test_two_leg_evolved_creature() -> None:
     # Run Until stamina = 60
-    evolved_creature: EvolvedCreature = EvolvedCreature(legs_quantity=2)
+    evolved_creature: EvolvedCreature = EvolvedCreature(legs_quantity=2, test_mode=True)
     stamina, position = helper(evolved_creature, MovementType.RUNNING.value)
     assert stamina == 60
     assert position == 60
@@ -59,7 +59,7 @@ def test_two_leg_evolved_creature() -> None:
 
 def test_two_wing_evolved_creature() -> None:
     # Run Until stamina = 60
-    evolved_creature: EvolvedCreature = EvolvedCreature(wings_quantity=2)
+    evolved_creature: EvolvedCreature = EvolvedCreature(wings_quantity=2, test_mode=True)
     stamina, position = helper(evolved_creature, MovementType.FLYING.value)
     assert stamina == 80
     assert position == 40
@@ -69,7 +69,7 @@ def test_two_wing_evolved_creature() -> None:
 
 
 def test_receive_damage() -> None:
-    evolved_creature = EvolvedCreature()
+    evolved_creature = EvolvedCreature(test_mode=True)
     assert evolved_creature.health == 100
 
     assert not evolved_creature.receive_damage(50)  # Survived 50 damage
@@ -79,22 +79,22 @@ def test_receive_damage() -> None:
 
 
 def test_do_damage_with_teeth_1() -> None:
-    evolved_creature = EvolvedCreature(teeth_sharpness_buff=3)
+    evolved_creature = EvolvedCreature(teeth_sharpness_buff=3, test_mode=True)
     assert evolved_creature.do_damage() == 4
 
 
 def test_do_damage_with_teeth_2() -> None:
-    evolved_creature = EvolvedCreature(teeth_sharpness_buff=4)
+    evolved_creature = EvolvedCreature(teeth_sharpness_buff=4, test_mode=True)
     assert evolved_creature.do_damage() == 5
 
 
 def test_do_damage_with_claws_1() -> None:
-    evolved_creature = EvolvedCreature(claws_size_buff=3)
+    evolved_creature = EvolvedCreature(claws_size_buff=3, test_mode=True)
     assert evolved_creature.do_damage() == 3
 
 
 def test_do_damage_with_claws_2() -> None:
-    evolved_creature = EvolvedCreature(claws_size_buff=6)
+    evolved_creature = EvolvedCreature(claws_size_buff=6, test_mode=True)
     assert evolved_creature.do_damage() == 6
 
 
@@ -102,6 +102,6 @@ def test_do_damage_mixed_buffs() -> None:
     teeth_buff = random.randint(1, 10)
     claws_buff = random.randint(1, 10)
     evolved_creature = EvolvedCreature(
-        teeth_sharpness_buff=teeth_buff, claws_size_buff=claws_buff
+        teeth_sharpness_buff=teeth_buff, claws_size_buff=claws_buff, test_mode=True
     )
     assert evolved_creature.do_damage() == (1 + teeth_buff) * claws_buff

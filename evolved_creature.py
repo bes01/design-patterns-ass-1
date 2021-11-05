@@ -13,6 +13,7 @@ class EvolvedCreature(Creature):
             legs_quantity: int = 0,
             teeth_sharpness_buff: int = 0,
             claws_size_buff: int = 1,
+            test_mode: bool = False
     ):
         self.position = position
         self.teeth_sharpness_buff = teeth_sharpness_buff
@@ -37,11 +38,12 @@ class EvolvedCreature(Creature):
 
         self.limbs_chain = wings
 
-        print(
-            f"\nThe creature evolved {wings_quantity} wing(s), {legs_quantity} "
-            f"leg(s), +{self.teeth_sharpness_buff} teeth damage buff and "
-            f"*{self.claws_size_buff} claws damage buff at position {self.position}"
-        )
+        if not test_mode:
+            print(
+                f"The creature evolved {wings_quantity} wing(s), {legs_quantity} "
+                f"leg(s), +{self.teeth_sharpness_buff} teeth damage buff and "
+                f"*{self.claws_size_buff} claws damage buff at position {self.position}\n"
+            )
 
     def do_move(self) -> bool:
         return self.limbs_chain.move()
