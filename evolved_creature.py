@@ -6,9 +6,14 @@ claws_buffs = [2, 3, 4]
 
 
 class EvolvedCreature(Creature):
-
-    def __init__(self, position: int, wings_quantity: int, legs_quantity: int,
-                 teeth_sharpness_buff: int = 0, claws_size_buff: int = 1):
+    def __init__(
+            self,
+            position: int,
+            wings_quantity: int,
+            legs_quantity: int,
+            teeth_sharpness_buff: int = 0,
+            claws_size_buff: int = 1,
+    ):
         self.position = position
         self.teeth_sharpness_buff = teeth_sharpness_buff
         self.claws_size_buff = claws_size_buff
@@ -22,7 +27,7 @@ class EvolvedCreature(Creature):
         legs = Limbs(self, legs_quantity, no_limbs)
         legs_movement_chain = Movement(legs, "Running", 60, 4, 6, 2,
                                        Movement(legs, "Walking", 40, 2, 4, 2,
-                                                Movement(legs, "Hopping", 20, 2, 3, 1)))
+                                                Movement(legs, "Hopping", 20, 2, 3, 1)), )
         legs.grant_movement_abilities(legs_movement_chain)
 
         # Wings: Flying
@@ -32,9 +37,11 @@ class EvolvedCreature(Creature):
 
         self.limbs_chain = wings
 
-        print(f'The creature evolved {wings_quantity} wing(s), {legs_quantity} leg(s), '
-              f'+{self.teeth_sharpness_buff} teeth damage buff and *{self.claws_size_buff} claws'
-              f' damage buff at position {self.position}')
+        print(
+            f"The creature evolved {wings_quantity} wing(s), {legs_quantity} leg(s), "
+            f"+{self.teeth_sharpness_buff} teeth damage buff and *{self.claws_size_buff} claws"
+            f" damage buff at position {self.position}"
+        )
 
     def do_move(self) -> bool:
         return self.limbs_chain.move()

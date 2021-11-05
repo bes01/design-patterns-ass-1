@@ -6,7 +6,6 @@ from creature import BodyPart
 
 
 class IMovement(ABC):
-
     @abstractmethod
     def move(self) -> bool:
         ...
@@ -17,7 +16,6 @@ class IMovement(ABC):
 
 
 class ILimbs(BodyPart, Protocol):
-
     def move(self) -> bool:
         ...
 
@@ -70,9 +68,11 @@ class Movement(IMovement):
         return self.can_i_move() or self.can_chain_move()
 
     def can_i_move(self):
-        return self.limb.limbs_quantity >= self.requires_limbs and \
-               self.limb.body.stamina > self.requires_stamina and \
-               self.limb.body.stamina - self.uses_stamina > 0
+        return (
+            self.limb.limbs_quantity >= self.requires_limbs
+            and self.limb.body.stamina > self.requires_stamina
+            and self.limb.body.stamina - self.uses_stamina > 0
+        )
 
     def can_chain_move(self):
         return self.movement_chain is not None and self.movement_chain.can_move()

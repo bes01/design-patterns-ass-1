@@ -5,14 +5,14 @@ def test1():
     predator, prey = Game.generate_creatures()
 
     while prey.do_move() or predator.do_move():
-        print(f'Prey: {prey.position}\nPredator: {predator.position}\n')
+        print(f"Prey: {prey.position}\nPredator: {predator.position}\n")
 
 
 def test2():
-    Game.hunt()
+    Game.hunt(*Game.generate_creatures())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test1()
     test2()
 
