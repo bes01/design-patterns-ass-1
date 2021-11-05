@@ -1,31 +1,27 @@
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Protocol
 
 
 @dataclass
-class Creature(ABC):
+class Creature:
     position: int
     power: int = 1
     health: int = 100
     stamina: int = 100
 
     # Returns true if creature moved successfully otherwise false
-    @abstractmethod
     def do_move(self) -> bool:
-        ...
+        return False
 
     # Returns amount of dealt damage
-    @abstractmethod
     def do_damage(self) -> int:
-        ...
+        return 1
 
     # Returns true if received damage was საბედისწერო
-    @abstractmethod
     def receive_damage(self, damage: int) -> bool:
-        ...
+        self.health -= damage
+        return self.health <= 0
 
 
 @dataclass
-class BodyPart(Protocol):
+class BodyPart:
     body: Creature

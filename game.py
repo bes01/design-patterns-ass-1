@@ -1,6 +1,7 @@
 import random
+from typing import Tuple
 
-from evolved_creature import *
+from evolved_creature import Creature, EvolvedCreature, teeth_buffs, claws_buffs
 
 
 class Game:
@@ -13,7 +14,8 @@ class Game:
             print("Pray ran into infinity")
         else:
             print("Creatures started fighting")
-            while not prey.receive_damage(predator.do_damage()) and not predator.receive_damage(prey.do_damage()):
+            while not prey.receive_damage(predator.do_damage()) \
+                    and not predator.receive_damage(prey.do_damage()):
                 pass
 
             if predator.health > 0:
@@ -22,7 +24,7 @@ class Game:
                 print("Pray ran into infinity")
 
     @staticmethod
-    def generate_creatures() -> (Creature, Creature):
+    def generate_creatures() -> Tuple[Creature, Creature]:
         print("Generating prey...")
         prey = EvolvedCreature(
             position=random.randint(1, 100),

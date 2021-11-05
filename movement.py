@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, Optional
 
 from creature import BodyPart
 
@@ -15,7 +15,7 @@ class IMovement(ABC):
         ...
 
 
-class ILimbs(BodyPart, Protocol):
+class ILimbs(Protocol):
     def move(self) -> bool:
         ...
 
@@ -27,8 +27,8 @@ class ILimbs(BodyPart, Protocol):
 @dataclass
 class Limbs(BodyPart):
     limbs_quantity: int
-    limbs_chain: ILimbs = None
-    movement_chain: IMovement = None
+    limbs_chain: Optional[ILimbs] = None
+    movement_chain: Optional[IMovement] = None
 
     def move(self) -> bool:
         if self.movement_chain is not None and self.movement_chain.can_move():
@@ -50,7 +50,7 @@ class Movement(IMovement):
     uses_stamina: int
     speed: int
     requires_limbs: int
-    movement_chain: IMovement = None
+    movement_chain: Optional[IMovement] = None
 
     # Returns true if moved successfully and updates creature stats otherwise returns false
     def move(self) -> bool:
@@ -69,9 +69,9 @@ class Movement(IMovement):
 
     def can_i_move(self):
         return (
-            self.limb.limbs_quantity >= self.requires_limbs
-            and self.limb.body.stamina > self.requires_stamina
-            and self.limb.body.stamina - self.uses_stamina > 0
+                self.limb.limbs_quantity >= self.requires_limbs
+                and self.limb.body.stamina > self.requires_stamina
+                and self.limb.body.stamina - self.uses_stamina > 0
         )
 
     def can_chain_move(self):
