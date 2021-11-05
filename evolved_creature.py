@@ -1,5 +1,5 @@
 from creature import Creature
-from movement import Limbs, Movement
+from movement import Limbs, Movement, MovementType
 
 teeth_buffs = [3, 6, 9]
 claws_buffs = [2, 3, 4]
@@ -8,9 +8,9 @@ claws_buffs = [2, 3, 4]
 class EvolvedCreature(Creature):
     def __init__(
             self,
-            position: int,
-            wings_quantity: int,
-            legs_quantity: int,
+            position: int = 0,
+            wings_quantity: int = 0,
+            legs_quantity: int = 0,
             teeth_sharpness_buff: int = 0,
             claws_size_buff: int = 1,
     ):
@@ -20,25 +20,25 @@ class EvolvedCreature(Creature):
 
         # No Limbs: Crawling
         no_limbs = Limbs(self, 0)
-        crawling = Movement(no_limbs, "Crawling", 0, 1, 1, 0)
+        crawling = Movement(no_limbs, *MovementType.CRAWLING.value)
         no_limbs.grant_movement_abilities(crawling)
 
         # Legs: Running, Walking and Hopping
         legs = Limbs(self, legs_quantity, no_limbs)
-        legs_movement_chain = Movement(legs, "Running", 60, 4, 6, 2,
-                                       Movement(legs, "Walking", 40, 2, 4, 2,
-                                                Movement(legs, "Hopping", 20, 2, 3, 1)))
+        legs_movement_chain = Movement(legs, *MovementType.RUNNING.value,
+                                       Movement(legs, *MovementType.WALKING.value,
+                                                Movement(legs, *MovementType.HOPPING.value)))
         legs.grant_movement_abilities(legs_movement_chain)
 
         # Wings: Flying
         wings = Limbs(self, wings_quantity, legs)
-        flying = Movement(wings, "Flying", 80, 4, 8, 2)
+        flying = Movement(wings, *MovementType.FLYING.value)
         wings.grant_movement_abilities(flying)
 
         self.limbs_chain = wings
 
         print(
-            f"The creature evolved {wings_quantity} wing(s), {legs_quantity} "
+            f"\nThe creature evolved {wings_quantity} wing(s), {legs_quantity} "
             f"leg(s), +{self.teeth_sharpness_buff} teeth damage buff and "
             f"*{self.claws_size_buff} claws damage buff at position {self.position}"
         )

@@ -1,8 +1,18 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from enum import Enum
 from typing import Protocol, Optional
 
 from creature import BodyPart
+
+
+# [movement_type_str, requires_stamina, uses_stamina, speed, requires_limbs]
+class MovementType(Enum):
+    FLYING = ["Flying", 80, 4, 8, 2]
+    RUNNING = ["Running", 60, 4, 6, 2]
+    WALKING = ["Walking", 40, 2, 4, 2]
+    HOPPING = ["Hopping", 20, 2, 3, 1]
+    CRAWLING = ["Crawling", 0, 1, 1, 0]
 
 
 class IMovement(ABC):
@@ -69,9 +79,9 @@ class Movement(IMovement):
 
     def can_i_move(self):
         return (
-                self.limb.limbs_quantity >= self.requires_limbs
-                and self.limb.body.stamina > self.requires_stamina
-                and self.limb.body.stamina - self.uses_stamina > 0
+            self.limb.limbs_quantity >= self.requires_limbs
+            and self.limb.body.stamina > self.requires_stamina
+            and self.limb.body.stamina - self.uses_stamina >= 0
         )
 
     def can_chain_move(self):
