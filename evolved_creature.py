@@ -48,7 +48,3 @@ class EvolvedCreature(Creature):
 
     def do_damage(self) -> int:
         return self.claws_size_buff * (self.teeth_sharpness_buff + self.power)
-
-    def receive_damage(self, damage: int) -> bool:
-        self.health -= damage
-        return self.health <= 0
