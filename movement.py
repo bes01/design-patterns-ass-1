@@ -77,12 +77,12 @@ class Movement(IMovement):
     def can_move(self) -> bool:
         return self.can_i_move() or self.can_chain_move()
 
-    def can_i_move(self):
+    def can_i_move(self) -> bool:
         return (
-            self.limb.limbs_quantity >= self.requires_limbs
-            and self.limb.body.stamina > self.requires_stamina
-            and self.limb.body.stamina - self.uses_stamina >= 0
+                self.limb.limbs_quantity >= self.requires_limbs
+                and self.limb.body.stamina > self.requires_stamina
+                and self.limb.body.stamina - self.uses_stamina >= 0
         )
 
-    def can_chain_move(self):
+    def can_chain_move(self) -> bool:
         return self.movement_chain is not None and self.movement_chain.can_move()

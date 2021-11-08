@@ -1,11 +1,11 @@
 import random
-from typing import List, Tuple
+from typing import List, Tuple, Any
 
 from evolved_creature import EvolvedCreature
 from movement import MovementType
 
 
-def helper(evolved_creature: EvolvedCreature, movement_stats: List) -> Tuple[int, int]:
+def helper(evolved_creature: EvolvedCreature, movement_stats: List[Any]) -> Tuple[int, int]:
     position: int = evolved_creature.position
     stamina: int = evolved_creature.stamina
 
